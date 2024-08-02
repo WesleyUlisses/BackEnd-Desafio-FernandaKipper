@@ -10,8 +10,8 @@ class   UserRoutes {
         this.userController = new UserControllers();
     }
 
-    getRoutes() {
-       this.router.get('/hello', this.userController.hello.bind(this.userController));
+    postRoutes() {
+       this.router.post('/create-user', this.userController.createUser.bind(this.userController));
        return this.router;
     }
    
