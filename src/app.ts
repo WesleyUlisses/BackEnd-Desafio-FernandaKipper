@@ -1,7 +1,7 @@
 import express, { Application } from 'express';
-import { errorMiddleware } from './middlewares/error.middlewares';
+import { errorMiddleware } from '../src/middlewares/error.middlewares';
 import { CorsMiddleware } from './server';
-import { UserRoutes } from './routes/user.routes';
+import { UserRoutes } from './disaster/routes/user.routes';
 export class App {
   private app: Application;
 
@@ -21,7 +21,7 @@ export class App {
     const userRoutes = new UserRoutes();
     const userBaseRoute = '/user';
 
-    this.app.use(userBaseRoute, userRoutes.getRoutes());
+    this.app.use(userBaseRoute, userRoutes.postRoutes());
   
   }
   private setupAllRoutes() {

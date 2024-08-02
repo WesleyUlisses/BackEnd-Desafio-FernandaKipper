@@ -6,8 +6,9 @@ class UserControllers {
         this.userServices = new UserServices();
     }
 
-    async hello(request: Request, response:Response, nextFunction: NextFunction){
-        const result = await this.userServices.hello();
+    async createUser(request: Request, response:Response, nextFunction: NextFunction){
+        const { name, whatsapp, phone, email, city, state, cep, neighborhood} = request.body;
+        const result = await this.userServices.createUser({ name, whatsapp, phone, email, city, state, cep, neighborhood});
         return response.status(200).json(result); 
     }    
 }
