@@ -12,15 +12,20 @@ class DesasterServices {
         
         // Defina o número WhatsApp do Twilio e o número de destino
         this.fromWhatsAppNumber = `whatsapp:${process.env.TWILIONUMBER}`; // Número do Twilio (Sandbox)
-        this.scheduleAlert();
+        
     }
 
     // Método para agendar o alerta de desastre
-    private scheduleAlert() {
-        cron.schedule('*/5 * * * * *', () => {
+    /*private scheduleAlert() {
+        cron.schedule('*//*5 * * * * *', () => {
             this.alertDesaster();
         });
-    }
+    }*/
+
+        async detectedDesaster(){
+           return this.alertDesaster();
+        }
+
 
     // Método que emite o alerta de desastre
     private async alertDesaster() {

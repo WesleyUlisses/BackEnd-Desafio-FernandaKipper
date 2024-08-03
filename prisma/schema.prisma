@@ -33,8 +33,8 @@ model City {
   name       String
   state      String
   latitude   String
-  longitude  String
-  address    Adress[] // Relacionamento de um para muitos com Address
+  longitude  String 
+  adress    Adress[] 
 }
 
 
