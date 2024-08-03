@@ -16,7 +16,7 @@ const corsConfig: CorsMiddleware = (req, res, next) => {
     res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, DELETE, HEAD, PATCH");
     next();
 };
-const desasterService = new DesasterServices();
+
 const PORT = process.env.PORT ? parseInt(process.env.PORT) : 3003;
 
 const app = new App(corsConfig);
