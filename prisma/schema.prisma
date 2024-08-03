@@ -19,7 +19,6 @@ model User {
 }
 model Adress {
   id    Int     @id @default(autoincrement())
-  state String  @unique
   cep String
   neighborhood String
   userId Int @unique
