@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { ErrorsHelpers } from '../../helpers/error.helpers';
+import { ErrorsHelpers } from '../helpers/error.helpers';
 
 export const errorMiddleware = (
   error: Error & Partial<ErrorsHelpers>,
