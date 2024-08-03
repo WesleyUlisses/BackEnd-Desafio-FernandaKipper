@@ -1,5 +1,5 @@
 import express, { Application } from 'express';
-import { errorMiddleware } from '../src/middlewares/error.middlewares';
+import { errorMiddleware } from './middlewares/error.middlewares';
 import { CorsMiddleware } from './server';
 import { UserRoutes } from './disaster/routes/user.routes';
 import swaggerUi from 'swagger-ui-express';

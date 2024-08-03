@@ -5,7 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.App = void 0;
 const express_1 = __importDefault(require("express"));
-const error_middlewares_1 = require("../src/middlewares/error.middlewares");
+const error_middlewares_1 = require("./middlewares/error.middlewares");
 const user_routes_1 = require("./disaster/routes/user.routes");
 const swagger_ui_express_1 = __importDefault(require("swagger-ui-express"));
 const swagger_1 = __importDefault(require("./swagger"));
