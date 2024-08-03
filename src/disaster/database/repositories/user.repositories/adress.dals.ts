@@ -22,7 +22,6 @@ class AdressDals {
                     neighborhood,
                     cep,
                     cityId: createdCity.id, // Relacionando com a cidade criada
-                    state: createdCity.state,
                     userId,
                 },
             });
