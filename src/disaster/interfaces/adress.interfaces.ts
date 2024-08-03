@@ -1,7 +1,9 @@
 export interface IAdressCreate{
-    city: string,
+    cityName: string,
     state: string,
     cep: string,
     userId: number,
     neighborhood: string,
+    latitude: string,
+    longitude: string
 }

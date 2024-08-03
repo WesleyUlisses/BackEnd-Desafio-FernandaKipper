@@ -2,6 +2,8 @@ import express, { Application } from 'express';
 import { errorMiddleware } from '../src/middlewares/error.middlewares';
 import { CorsMiddleware } from './server';
 import { UserRoutes } from './disaster/routes/user.routes';
+import swaggerUi from 'swagger-ui-express';
+import swaggerSpec from './swagger';
 export class App {
   private app: Application;
 
@@ -26,6 +28,14 @@ export class App {
   }
   private setupAllRoutes() {
      this.setupUserRoutes();
+     this.setupSwagger();
+  }
+   private setupSwagger() {
+    this.app.use(
+      '/documentation',
+      swaggerUi.serve,
+      swaggerUi.setup(swaggerSpec),
+    );
   }
 
   private middleware(corsConfig: CorsMiddleware) {
