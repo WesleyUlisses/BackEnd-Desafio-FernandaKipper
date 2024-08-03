@@ -1,4 +1,4 @@
-import * as errorsInterfaces from '../interfaces/error.helpers.interface' 
+import * as errorsInterfaces from '../disaster/interfaces/error.helpers.interface' 
 /**
  * Classe base para erros personalizados.
  * @extends {Error}
