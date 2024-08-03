@@ -19,13 +19,23 @@ model User {
 }
 model Adress {
   id    Int     @id @default(autoincrement())
-  city String
   state String  @unique
   cep String
   neighborhood String
   userId Int @unique
   user User @relation(fields: [userId], references: [id])
-
+  cityId      Int @unique
+  city        City   @relation(fields: [cityId], references: [id])
 
 }
+model City {
+  id         Int       @id @default(autoincrement())
+  name       String
+  state      String
+  latitude   String
+  longitude  String
+  address    Adress[] // Relacionamento de um para muitos com Address
+}
+
+
 

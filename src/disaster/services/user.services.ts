@@ -13,17 +13,19 @@ class UserServices {
         this.adressDals = new AdressDals();
     }
 
-    async createUser({ name, whatsapp, phone, email, city, state, cep, neighborhood}: IUserData) {
+    async createUser({ name, whatsapp, phone, email, city, state, cep, neighborhood, latitude, longitude}: IUserData) {
             const user = await this.userDals.createUser({ name, whatsapp, phone, email });
             if(!user){
                 throw new BadRequestError({message: 'user not created'})
             }
             const address = await this.adressDals.createAdress({
-                city: city,
+                cityName: city,
                 state: state,
                 userId: user.id, 
                 cep: cep,
-                neighborhood: neighborhood
+                neighborhood: neighborhood,
+                latitude: latitude,
+                longitude
             });
             if(!address){
                 throw new BadRequestError({message: 'adress not created'})

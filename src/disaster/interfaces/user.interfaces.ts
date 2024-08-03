@@ -7,6 +7,8 @@ export interface IUserData{
     state: string;
     cep: string;
     neighborhood: string;
+    latitude: string,
+    longitude: string
 }
 export interface IUserCreate{
     name: string;

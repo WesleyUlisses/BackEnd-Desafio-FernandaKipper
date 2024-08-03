@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
+    "test:watch": "jest --watch",
     "start": "node dist/server.js",
     "dev": " ts-node-dev --transpile-only --ignore-watch node_modules src/server.ts",
     "build": "tsc"
@@ -14,12 +15,22 @@
   "license": "ISC",
   "dependencies": {
     "@prisma/client": "^5.17.0",
-    "express": "^4.19.2"
+    "express": "^4.19.2",
+    "node-cron": "^3.0.3",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1",
+    "twilio": "^5.2.2"
   },
   "devDependencies": {
     "@types/express": "^4.17.21",
+    "@types/jest": "^29.5.12",
     "@types/node": "^22.1.0",
+    "@types/node-cron": "^3.0.11",
+    "@types/swagger-jsdoc": "^6.0.4",
+    "@types/swagger-ui-express": "^4.1.6",
+    "jest": "^29.7.0",
     "prisma": "^5.17.0",
+    "ts-jest": "^29.2.4",
     "ts-node": "^10.9.2",
     "typescript": "^5.5.4"
   }

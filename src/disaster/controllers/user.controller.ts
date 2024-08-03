@@ -7,8 +7,8 @@ class UserControllers {
     }
 
     async createUser(request: Request, response:Response, nextFunction: NextFunction){
-        const { name, whatsapp, phone, email, city, state, cep, neighborhood} = request.body;
-        const result = await this.userServices.createUser({ name, whatsapp, phone, email, city, state, cep, neighborhood});
+        const { latitude, longitude, name, whatsapp, phone, email, city, state, cep, neighborhood} = request.body;
+        const result = await this.userServices.createUser({ name, whatsapp, phone, email, city, state, cep, neighborhood, latitude, longitude});
         return response.status(200).json(result); 
     }    
 }
