@@ -11,13 +11,13 @@ class DesasterServices {
   private cityDals: CityDals;
   private adressDals: AdressDals;
   private userDals: UserDals;
-  private emailDals: EmailUtils;
+  private emailUtils: EmailUtils;
 
   constructor() {
     this.cityDals = new CityDals();
     this.adressDals = new AdressDals();
     this.userDals = new UserDals();
-    this.emailDals = new EmailUtils();
+     this.emailUtils = new EmailUtils();
     // Configurar o cliente Twilio
     this.client = twilio(process.env.ACOUNTSID, process.env.AUTHTOKEN);
 
@@ -39,7 +39,6 @@ class DesasterServices {
       { latitude: -12.9704, longitude: -38.5124 },
     ];
     const risks = ["moderado", "alto", "imediata"];
-   
     // Seleciona um valor aleatório de cada array
     const randomCity = cities[Math.floor(Math.random() * cities.length)];
     const randomRisk = risks[Math.floor(Math.random() * risks.length)];
@@ -48,41 +47,30 @@ class DesasterServices {
       String(randomCity.latitude),
       String(randomCity.longitude)
     );
-    
-
+    console.log(findCity)
     if (findCity) {
       const findAdress = await this.adressDals.findAddressesByCity(
         findCity.name,
         findCity.state
       );
 
-      const userPromises = findAdress.map(async (address) => {
+      // Se encontrar os endereços, mapeie o array para extrair os userIds
+     // Recupere os IDs dos usuários e seus números de WhatsApp
+    const userPromises = findAdress.map(async (address) => {
       const user = await this.userDals.findUserById(address.userId);
-      return user ? user : null;
+      return user;
     });
 
     const users = await Promise.all(userPromises);
     
-    // Enviar alerta via WhatsApp e email
+
     for (const user of users) {
-      if (!user) {
-        throw new NotFoundError({ message: 'user not found' });
+      if(!user){
+        throw new NotFoundError({message: 'user not found'})
       }
-      
-      const whatsappNumber = user.phone;
-      const email = user.email;
-      
-      if (whatsappNumber) {
-        await this.alertDesaster(whatsappNumber, "Alerta de desastre: Tome as precauções necessárias!");
-      }
-      
-      if (email) {
-        await this.emailDals.sendEmail({
-          destination: email,
-          subject: "Alerta de Desastre",
-          content: "Estamos notificando sobre um possível desastre na sua área. Por favor, tome as precauções necessárias."
-        });
-      }
+      console.log(user)
+      await this.alertDesaster(user.phone, "Alerta de desastre: Tome as precauções necessárias!");
+      await this.emailUtils.sendEmail({destination: user.email, subject: "Risco", content: "Alerta de desastre: Tome as precauções necessárias!"})
     }
       // Agora você pode fazer algo com os userIds, como enviar alertas, etc.
     }
@@ -98,7 +86,7 @@ class DesasterServices {
     const message = await this.client.messages.create({
       from:`whatsapp:${process.env.TWILIONUMBER}`,
       to: `whatsapp:${number}`,
-      body: text,
+      body: "mensagem",
     });
 
     console.log("Mensagem enviada com sucesso:", message.sid);
