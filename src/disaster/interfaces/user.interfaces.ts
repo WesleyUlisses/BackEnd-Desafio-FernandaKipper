@@ -1,18 +1,15 @@
-export interface IUserData{
-    name: string;
-    email: string;
-    whatsapp: string;
-    phone: string;
-    city: string;
-    state: string;
-    cep: string;
-    neighborhood: string;
-    latitude: string,
-    longitude: string
+import { IAddress } from '../interfaces/adress.interfaces';
+
+
+export interface IUserRegistrationData {
+  name: string;
+  email: string;
+  phoneNumber: string; 
+  address: IAddress;   
 }
+
 export interface IUserCreate{
     name: string;
     email: string;
-    whatsapp: string;
     phone: string;
 }

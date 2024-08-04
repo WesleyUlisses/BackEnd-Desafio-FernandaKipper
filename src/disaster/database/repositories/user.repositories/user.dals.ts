@@ -4,11 +4,10 @@ class UserDals{
     ccnstructor(){
 
     }
-    async createUser({name, whatsapp, phone, email}: IUserCreate){
+    async createUser({name, phone, email}: IUserCreate){
         const result = await prisma.user.create({
             data: {
                 name,
-                whatsapp,
                 phone,
                 email
             }

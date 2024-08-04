@@ -11,10 +11,11 @@ class CityDals {
     return city;
   }
   async findCityByCoordinates(latitude: string, longitude: string) {
+   
     const city = await prisma.city.findFirst({
       where: { latitude: `${latitude}`, longitude: `${longitude}` },
     });
-    console.log(city);
+    
 
     return city;
   }

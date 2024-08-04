@@ -4,6 +4,7 @@ import { CorsMiddleware } from './server';
 import { UserRoutes } from './disaster/routes/user.routes';
 import swaggerUi from 'swagger-ui-express';
 import swaggerSpec from './swagger';
+import { EmailRoutes } from './disaster/routes/email.routes';
 export class App {
   private app: Application;
 
@@ -26,9 +27,17 @@ export class App {
     this.app.use(userBaseRoute, userRoutes.postRoutes());
   
   }
+  private setupEmailRoutes() {
+    const emailRoutes = new EmailRoutes();
+    const emailBaseRoute = '/email';
+
+    this.app.use(emailBaseRoute, emailRoutes.postRoutes());
+  
+  }
   private setupAllRoutes() {
      this.setupUserRoutes();
      this.setupSwagger();
+     this.setupEmailRoutes();
   }
    private setupSwagger() {
     this.app.use(

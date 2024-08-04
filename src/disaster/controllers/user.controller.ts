@@ -1,16 +1,31 @@
-import { Request, Response, NextFunction  } from "express";
+import { Request, Response, NextFunction } from "express";
 import { UserServices } from "../services/user.services";
+import { IUserRegistrationData } from "../interfaces/user.interfaces"; // Supondo que a interface foi nomeada assim
+
 class UserControllers {
-    private readonly userServices: UserServices
-    constructor(){
+    private readonly userServices: UserServices;
+
+    constructor() {
         this.userServices = new UserServices();
     }
 
-    async createUser(request: Request, response:Response, nextFunction: NextFunction){
-        const { latitude, longitude, name, whatsapp, phone, email, city, state, cep, neighborhood} = request.body;
-        const result = await this.userServices.createUser({ name, whatsapp, phone, email, city, state, cep, neighborhood, latitude, longitude});
-        return response.status(200).json(result); 
-    }    
+    async createUser(request: Request, response: Response, nextFunction: NextFunction) {
+        try {
+            const { name,  phoneNumber, email, address }: IUserRegistrationData = request.body;
+
+            // Chame o serviço para criar o usuário e endereço
+            const result = await this.userServices.createUser({
+                name,
+                phoneNumber,
+                email,
+                address,
+            });
+
+            return response.status(200).json(result); 
+        } catch (error) {
+            nextFunction(error); // Passa o erro para o middleware de tratamento de erros
+        }
+    }
 }
 
-export {UserControllers};
+export { UserControllers };

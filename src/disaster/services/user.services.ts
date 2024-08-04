@@ -1,8 +1,8 @@
 import { UserDals } from "../database/repositories/user.repositories/user.dals";
 import { AdressDals } from "../database/repositories/user.repositories/adress.dals";
-import { IUserData } from "../interfaces/user.interfaces";
+import { IUserRegistrationData } from "../interfaces/user.interfaces";
 import { BadRequestError } from "../../helpers/error.helpers";
-import axios  from "axios";
+import axios from "axios";
 import { CityDals } from "../database/repositories/user.repositories/city.dals";
 
 class UserServices {
@@ -18,48 +18,44 @@ class UserServices {
 
   async createUser({
     name,
-    whatsapp,
-    phone,
     email,
-    city,
-    state,
-    cep,
-    neighborhood,
-    latitude,
-    longitude,
-  }: IUserData) {
+    phoneNumber,
+    address
+  }: IUserRegistrationData) {
     const user = await this.userDals.createUser({
       name,
-      whatsapp,
-      phone,
       email,
+      phone: phoneNumber
     });
     if (!user) {
-      throw new BadRequestError({ message: "user not created" });
+      throw new BadRequestError({ message: "User not created" });
     }
+
+    const { city, state, location, cep, neighborhood, street} = address;
+
     const findCity = await this.cityDals.doesCityExist(city, state);
-    if(!findCity){
-        const trigger = await this.registerTrigger(Number(latitude), Number(longitude) );
-        console.log(trigger)
+    if (!findCity) {
+      const { coordinates } = location;
+      const trigger = await this.registerTrigger(Number(coordinates.latitude), Number(coordinates.longitude));
+      console.log(trigger);
     }
-    const address = await this.adressDals.createAdress({
+
+    const newAddress = await this.adressDals.createAdress({
       cityName: city,
       state: state,
       userId: user.id,
       cep: cep,
       neighborhood: neighborhood,
-      latitude: latitude,
-      longitude,
+      street: street,
+      location: location,
     });
-    if (!address) {
-      throw new BadRequestError({ message: "adress not created" });
+    if (!newAddress) {
+      throw new BadRequestError({ message: "Address not created" });
     }
 
-    
-    
     return {
       user: user,
-      address: address,
+      address: newAddress,
       message: "User and address created successfully",
     };
   }
@@ -102,7 +98,7 @@ class UserServices {
         return error;
       });
 
-      return response
+    return response;
   }
 }
 
