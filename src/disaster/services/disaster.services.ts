@@ -38,10 +38,11 @@ class DesasterServices {
       { latitude: -13.851, longitude: 40.0812 },
       { latitude: -12.9704, longitude: -38.5124 },
     ];
-    const risks = ["moderado", "alto", "imediata"];
+    const risks = ["moderado", "alto", "imediato"];
     // Seleciona um valor aleatório de cada array
     const randomCity = cities[Math.floor(Math.random() * cities.length)];
     const randomRisk = risks[Math.floor(Math.random() * risks.length)];
+    
     console.log(randomCity);
     const findCity = await this.cityDals.findCityByCoordinates(
       String(randomCity.latitude),
@@ -69,8 +70,9 @@ class DesasterServices {
         throw new NotFoundError({message: 'user not found'})
       }
       console.log(user)
-      await this.alertDesaster(user.phone, "Alerta de desastre: Tome as precauções necessárias!");
-      await this.emailUtils.sendEmail({destination: user.email, subject: "Risco", content: "Alerta de desastre: Tome as precauções necessárias!"})
+      const message = this.generateAlertMessage(randomRisk, user.name);
+      await this.alertDesaster(user.phone, message);
+      await this.emailUtils.sendEmail({destination: user.email, subject: `Alerta de risco ${randomRisk}`, content: message})
     }
       // Agora você pode fazer algo com os userIds, como enviar alertas, etc.
     }
@@ -91,6 +93,30 @@ class DesasterServices {
 
     console.log("Mensagem enviada com sucesso:", message.sid);
   }
+private generateAlertMessage(risk: string, name: string): string {
+  let message = "";
+
+  switch (risk.toLowerCase()) {
+    case "moderado":
+      message = `Prezado ${name}, as condições climáticas na sua área estão apresentando um risco moderado de enchentes/queimadas. Recomendamos que você monitore as atualizações e esteja preparado para possíveis mudanças no tempo.`;
+      break;
+      
+    case "alto":
+      message = `Atenção ${name}, há um alerta de alto risco para enchentes/queimadas na sua região. Por favor, siga as instruções de segurança, mantenha-se informado e prepare-se para possíveis evacuações. Estaremos enviando atualizações conforme a situação evolui.`;
+      break;
+      
+    case "imediata":
+      message = `Urgente ${name}, uma emergência de enchentes/queimadas está em andamento na sua área. Por favor, siga imediatamente as instruções de evacuação e busque abrigo seguro. Mantenha-se atento às atualizações e comunique-se com as autoridades locais.`;
+      break;
+      
+    default:
+      message = `Olá ${name}, estamos monitorando as condições climáticas na sua área. Fique atento para mais atualizações.`;
+      break;
+  }
+
+  return message;
+}
+
 }
 
 export { DesasterServices };
