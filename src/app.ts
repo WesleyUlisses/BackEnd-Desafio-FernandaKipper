@@ -5,6 +5,8 @@ import { UserRoutes } from './disaster/routes/user.routes';
 import swaggerUi from 'swagger-ui-express';
 import swaggerSpec from './swagger';
 import { EmailRoutes } from './disaster/routes/email.routes';
+import { VolunteerRoutes } from './blog/routes/volunteer.routes';
+import { PostRoutes } from './blog/routes/post.routes';
 export class App {
   private app: Application;
 
@@ -34,10 +36,27 @@ export class App {
     this.app.use(emailBaseRoute, emailRoutes.postRoutes());
   
   }
+  private setupVolunteerRoutes() {
+    const volunteerRoutes = new VolunteerRoutes();
+    const volunteerBaseRoute = '/volunteer';
+
+    this.app.use(volunteerBaseRoute, volunteerRoutes.volunteerRoutes());
+  
+  }
+
+   private setupPostRoutes() {
+    const postRoutes = new PostRoutes();
+    const postBaseRoute = '/post';
+
+    this.app.use(postBaseRoute, postRoutes.routes());
+  
+  }
   private setupAllRoutes() {
      this.setupUserRoutes();
      this.setupSwagger();
      this.setupEmailRoutes();
+     this.setupVolunteerRoutes();
+     this.setupPostRoutes();
   }
    private setupSwagger() {
     this.app.use(

@@ -12,6 +12,6 @@
     "resolveJsonModule": true,
     "strictNullChecks": true
   },
-  "include": ["src"],
+  "include": ["src", "src/middlewares", "src/helpers"],
   "exclude": ["node_modules", "dist"]
 }
