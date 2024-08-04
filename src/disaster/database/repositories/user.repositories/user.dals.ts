@@ -16,5 +16,11 @@ class UserDals{
 
         return result;
     }
+    async findUserById(id: number){
+        const result = await prisma.user.findUnique({
+            where:{id}
+        })
+        return result;
+    }
 }
 export {UserDals}
