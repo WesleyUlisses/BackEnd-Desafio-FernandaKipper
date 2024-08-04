@@ -24,7 +24,7 @@ class AdressDals {
         return addresses;
     }
 
-    async createAdress({ neighborhood, cep, cityName, latitude, longitude, state, userId }: IAdressCreate) {
+    async createAdress({street, neighborhood, cep, cityName, location, state, userId }: IAdressCreate) {
         const result = await prisma.$transaction(async (prisma) => {
 
             let city = await this.cityDals.doesCityExist(cityName, state);
@@ -33,8 +33,8 @@ class AdressDals {
                     data: {
                         name: cityName,
                         state: state,
-                        latitude: latitude,
-                        longitude: longitude,
+                        latitude: location.coordinates.latitude,
+                        longitude: location.coordinates.longitude,
                     },
                 });
          }
@@ -45,6 +45,7 @@ class AdressDals {
                     neighborhood,
                     cep,
                     cityId: city.id, 
+                    street: street,
                     userId,
                 },
             });
