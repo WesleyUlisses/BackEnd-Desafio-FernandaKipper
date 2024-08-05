@@ -72,7 +72,7 @@ Este projeto é um sistema abrangente para monitoramento, alerta e suporte psico
 ### Configuração para Envio de Mensagens
 
 - **WhatsApp**: Para enviar mensagens via WhatsApp, é necessário criar uma conta no Twilio e configurar as credenciais (`AUTHTOKEN`, `ACOUNTSID`, `TWILIONUMBER`, `PERSONALNUMBER`).
-- **E-mail**: Para envio de e-mails, utilize o Amazon SES (Simple Email Service) da AWS. As credenciais necessárias são `AWS_ACCESS_KEY`, `AWS_SECRET_ACCESS_KEY`, `AWS_REGION`, e `AWS_API_VERSION`.
+- **E-mail**: Para envio de e-mails, utilize o Amazon SES (Simple Email Service) da AWS. As credenciais necessárias são `AWS_ACCESS_KEY`, `AWS_SECRET_ACCESS_KEY`, `AWS_REGION`, e `AWS_API_VERSION`. **Importante**: O sistema está configurado para enviar e-mails apenas para endereços com o domínio `@labsif.com.br`.
 
 ### Instalação
 
@@ -105,6 +105,10 @@ Este projeto é um sistema abrangente para monitoramento, alerta e suporte psico
    ```bash
    npm run start
    ```
+
+## Considerações sobre o Ambiente de Hospedagem
+
+- **Período de Inatividade**: A API entra em modo de suspensão após um período de inatividade. Isso significa que, ao ser acessada novamente, a primeira requisição pode demorar até 50 segundos para ser processada, devido à necessidade de "acordar" a aplicação. Esse comportamento é decorrente da utilização de uma plataforma gratuita para hospedagem.
 
 ## Contribuição
 
