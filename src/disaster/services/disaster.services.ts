@@ -17,7 +17,7 @@ class DesasterServices {
     this.cityDals = new CityDals();
     this.adressDals = new AdressDals();
     this.userDals = new UserDals();
-     this.emailUtils = new EmailUtils();
+    this.emailUtils = new EmailUtils();
     // Configurar o cliente Twilio
     this.client = twilio(process.env.ACOUNTSID, process.env.AUTHTOKEN);
 
@@ -28,7 +28,7 @@ class DesasterServices {
 
   // Método para agendar o alerta de desastre
   private scheduleAlert() {
-    cron.schedule("*/5 * * * * *", () => {
+    cron.schedule("0 8 * * *", () => {
       this.detectedDesaster();
     });
   }
@@ -42,13 +42,13 @@ class DesasterServices {
     // Seleciona um valor aleatório de cada array
     const randomCity = cities[Math.floor(Math.random() * cities.length)];
     const randomRisk = risks[Math.floor(Math.random() * risks.length)];
-    
+
     console.log(randomCity);
     const findCity = await this.cityDals.findCityByCoordinates(
       String(randomCity.latitude),
       String(randomCity.longitude)
     );
-    console.log(findCity)
+    console.log(findCity);
     if (findCity) {
       const findAdress = await this.adressDals.findAddressesByCity(
         findCity.name,
@@ -56,24 +56,27 @@ class DesasterServices {
       );
 
       // Se encontrar os endereços, mapeie o array para extrair os userIds
-     // Recupere os IDs dos usuários e seus números de WhatsApp
-    const userPromises = findAdress.map(async (address) => {
-      const user = await this.userDals.findUserById(address.userId);
-      return user;
-    });
+      // Recupere os IDs dos usuários e seus números de WhatsApp
+      const userPromises = findAdress.map(async (address) => {
+        const user = await this.userDals.findUserById(address.userId);
+        return user;
+      });
 
-    const users = await Promise.all(userPromises);
-    
+      const users = await Promise.all(userPromises);
 
-    for (const user of users) {
-      if(!user){
-        throw new NotFoundError({message: 'user not found'})
+      for (const user of users) {
+        if (!user) {
+          throw new NotFoundError({ message: "user not found" });
+        }
+        console.log(user);
+        const message = this.generateAlertMessage(randomRisk, user.name);
+        await this.alertDesaster(user.phone, message);
+        await this.emailUtils.sendEmail({
+          destination: user.email,
+          subject: `Alerta de risco ${randomRisk}`,
+          content: message,
+        });
       }
-      console.log(user)
-      const message = this.generateAlertMessage(randomRisk, user.name);
-      await this.alertDesaster(user.phone, message);
-      await this.emailUtils.sendEmail({destination: user.email, subject: `Alerta de risco ${randomRisk}`, content: message})
-    }
       // Agora você pode fazer algo com os userIds, como enviar alertas, etc.
     }
 
@@ -86,37 +89,36 @@ class DesasterServices {
     );
 
     const message = await this.client.messages.create({
-      from:`whatsapp:${process.env.TWILIONUMBER}`,
+      from: `whatsapp:${process.env.TWILIONUMBER}`,
       to: `whatsapp:${number}`,
       body: "mensagem",
     });
 
     console.log("Mensagem enviada com sucesso:", message.sid);
   }
-private generateAlertMessage(risk: string, name: string): string {
-  let message = "";
+  private generateAlertMessage(risk: string, name: string): string {
+    let message = "";
 
-  switch (risk.toLowerCase()) {
-    case "moderado":
-      message = `Prezado ${name}, as condições climáticas na sua área estão apresentando um risco moderado de enchentes/queimadas. Recomendamos que você monitore as atualizações e esteja preparado para possíveis mudanças no tempo.`;
-      break;
-      
-    case "alto":
-      message = `Atenção ${name}, há um alerta de alto risco para enchentes/queimadas na sua região. Por favor, siga as instruções de segurança, mantenha-se informado e prepare-se para possíveis evacuações. Estaremos enviando atualizações conforme a situação evolui.`;
-      break;
-      
-    case "imediata":
-      message = `Urgente ${name}, uma emergência de enchentes/queimadas está em andamento na sua área. Por favor, siga imediatamente as instruções de evacuação e busque abrigo seguro. Mantenha-se atento às atualizações e comunique-se com as autoridades locais.`;
-      break;
-      
-    default:
-      message = `Olá ${name}, estamos monitorando as condições climáticas na sua área. Fique atento para mais atualizações.`;
-      break;
+    switch (risk.toLowerCase()) {
+      case "moderado":
+        message = `Prezado ${name}, as condições climáticas na sua área estão apresentando um risco moderado de enchentes/queimadas. Recomendamos que você monitore as atualizações e esteja preparado para possíveis mudanças no tempo.`;
+        break;
+
+      case "alto":
+        message = `Atenção ${name}, há um alerta de alto risco para enchentes/queimadas na sua região. Por favor, siga as instruções de segurança, mantenha-se informado e prepare-se para possíveis evacuações. Estaremos enviando atualizações conforme a situação evolui.`;
+        break;
+
+      case "imediata":
+        message = `Urgente ${name}, uma emergência de enchentes/queimadas está em andamento na sua área. Por favor, siga imediatamente as instruções de evacuação e busque abrigo seguro. Mantenha-se atento às atualizações e comunique-se com as autoridades locais.`;
+        break;
+
+      default:
+        message = `Olá ${name}, estamos monitorando as condições climáticas na sua área. Fique atento para mais atualizações.`;
+        break;
+    }
+
+    return message;
   }
-
-  return message;
-}
-
 }
 
 export { DesasterServices };

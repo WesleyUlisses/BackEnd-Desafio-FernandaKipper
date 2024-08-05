@@ -4,16 +4,18 @@ import { IUserRegistrationData } from "../interfaces/user.interfaces";
 import { BadRequestError } from "../../helpers/error.helpers";
 import axios from "axios";
 import { CityDals } from "../database/repositories/user.repositories/city.dals";
+import { EmailUtils } from "../../utils/email.utils";
 
 class UserServices {
   private userDals: UserDals;
   private adressDals: AdressDals;
   private cityDals: CityDals;
-
+  private emailUtils: EmailUtils;
   constructor() {
     this.userDals = new UserDals();
     this.adressDals = new AdressDals();
     this.cityDals = new CityDals();
+    this.emailUtils = new EmailUtils();
   }
 
   async createUser({
@@ -52,6 +54,9 @@ class UserServices {
     if (!newAddress) {
       throw new BadRequestError({ message: "Address not created" });
     }
+    const message = `Olá, ${user.name} Seja bem-vindo ao nosso Sistema de Alerta e Evacuação. A sua segurança é a nossa prioridade, e estamos aqui para ajudar a mantê-lo informado e preparado para quaisquer emergências relacionadas a enchentes, queimadas e outros desastres naturais. Aqui estão alguns dos recursos que você agora tem à disposição: Monitoramento em Tempo Real: Receba alertas personalizados sobre os riscos na sua área. Apoio Psicológico: Acesso a suporte psicológico online, caso você ou sua família precisem de ajuda. Informações Detalhadas: Mantenha-se informado com artigos e orientações sobre como agir em situações de emergência. Para começar, recomendamos que você complete seu perfil, incluindo detalhes importantes como seu endereço e contatos adicionais. Isso nos ajudará a fornecer alertas mais precisos e relevantes. Se você tiver alguma dúvida ou precisar de assistência, não hesite em nos contatar. Estamos aqui para ajudar você a se manter seguro! Atenciosamente, Equipe de Suporte ao Usuário Sistema de Alerta e Evacuação`
+
+    await this.emailUtils.sendEmail({destination: user.email, subject: "Boas vindas novo usuário", content: message});
 
     return {
       user: user,
